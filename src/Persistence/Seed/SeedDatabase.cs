@@ -11,12 +11,12 @@ namespace Persistence.Seed
             this.context = context;
         }
 
-        public void Seed()
+        public async Task Seed()
         {
-            SeedActivities();
+            await SeedActivities();
         }
 
-        private void SeedActivities()
+        private async Task SeedActivities()
         {
             if (context.Activities is null)
             {
@@ -50,8 +50,8 @@ namespace Persistence.Seed
                     Venue = "Arena Lviv",
                 }
             };
-            context.Activities.AddRange(activities);
-            context.SaveChanges();
+            await context.Activities.AddRangeAsync(activities);
+            await context.SaveChangesAsync();
         }
     }
 }

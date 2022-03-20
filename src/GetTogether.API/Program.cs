@@ -19,7 +19,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 var app = builder.Build();
-SeedDatabase(app);
+await SeedDatabase(app);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -36,18 +36,18 @@ app.MapControllers();
 
 app.Run();
 
-static void SeedDatabase(IHost host)
+static async Task SeedDatabase(IHost host)
 {
     using var scope = host.Services.CreateScope();
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<ApplicationDbContext>();
 
-    context.Database.Migrate();
+    await context.Database.MigrateAsync();
 
     var service = services.GetService<SeedDatabase>();
     if (service == null)
     {
         throw new ArgumentNullException(nameof(service));
     }
-    service.Seed();
+    await service.Seed();
 }
