@@ -1,3 +1,5 @@
+using Application.Activities;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Seed;
@@ -25,6 +27,8 @@ builder.Services.AddCors(options =>
         policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000");
     });
 });
+
+builder.Services.AddMediatR(typeof(List.Handler).Assembly);
 
 var app = builder.Build();
 await SeedDatabase(app);

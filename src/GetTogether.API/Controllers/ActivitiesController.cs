@@ -1,4 +1,6 @@
-﻿using Domain.Entities;
+﻿using Application.Activities;
+using Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,17 +12,17 @@ namespace GetTogether.API.Controllers
     [ApiController]
     public class ActivitiesController : ControllerBase
     {
-        private readonly ApplicationDbContext context;
+        private readonly IMediator mediator;
 
-        public ActivitiesController(ApplicationDbContext context)
+        public ActivitiesController(IMediator mediator)
         {
-            this.context = context;
+            this.mediator = mediator;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<ActivityEntity>>> GetActivities()
         {
-            return await context.Activities.ToListAsync();
+            return await mediator.Send(new List.Query());
         }
     }
 }
