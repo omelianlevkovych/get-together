@@ -30,7 +30,7 @@ namespace GetTogether.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateActivity(ActivityDto activity)
+        public async Task<IActionResult> CreateActivity(ActivityDtoBase activity)
         {
             await Mediator.Send(new Create.Command { Activity = activity });
             return Ok();
