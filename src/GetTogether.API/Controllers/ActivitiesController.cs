@@ -1,28 +1,25 @@
 ﻿using Application.Activities;
 using Domain.Entities;
-using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Persistence;
 
 namespace GetTogether.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ActivitiesController : ControllerBase
+    public class ActivitiesController : BaseApiController
     {
-        private readonly IMediator mediator;
-
-        public ActivitiesController(IMediator mediator)
-        {
-            this.mediator = mediator;
-        }
 
         [HttpGet]
         public async Task<ActionResult<List<ActivityEntity>>> GetActivities()
         {
-            return await mediator.Send(new List.Query());
+            return await Mediator.Send(new List.Query());
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ActivityEntity>> GetActivity(Guid id)
+        {
+            var activity = await Mediator.Send(new Details.Query{Id = id});
+            return (activity is not null) ? Ok(activity) : NotFound();
         }
     }
 }

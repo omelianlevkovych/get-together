@@ -16,9 +16,9 @@ namespace Application.Activities
                 this.context = context;
             }
 
-            public async Task<List<ActivityEntity>> Handle(Query request, CancellationToken cancellationToken)
+            public Task<List<ActivityEntity>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return await context.Activities.ToListAsync();
+                return context.Activities.ToListAsync();
             }
         }
     }
