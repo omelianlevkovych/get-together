@@ -10,6 +10,6 @@ namespace Persistence
         {
         }
 
-        public DbSet<ActivityEntity>? Activities { get; set; }
+        public DbSet<ActivityEntity> Activities { get; set; }
     }
 }

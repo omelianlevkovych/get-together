@@ -1,3 +1,6 @@
+using Application.Activities;
+using Application.Common.Mapper;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Seed;
@@ -11,6 +14,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<SeedDatabase>();
+builder.Services.AddScoped<IMapper, Mapper>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -25,6 +29,8 @@ builder.Services.AddCors(options =>
         policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000");
     });
 });
+
+builder.Services.AddMediatR(typeof(List.Handler).Assembly);
 
 var app = builder.Build();
 await SeedDatabase(app);
