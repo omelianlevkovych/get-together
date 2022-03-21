@@ -1,5 +1,4 @@
 ﻿using Application.Activities;
-using Application.Common.Mapper;
 using Application.DTOs.Activities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,13 +8,6 @@ namespace GetTogether.API.Controllers
     [ApiController]
     public class ActivitiesController : BaseApiController
     {
-        private readonly IMapper mapper;
-
-        public ActivitiesController(IMapper mapper)
-        {
-            this.mapper = mapper;
-        }
-
         [HttpGet]
         public async Task<ActionResult<ActivitiesViewModel>> GetActivities()
         {
