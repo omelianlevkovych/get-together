@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Common.Mapper;
+using Application.DTOs.Activities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -7,18 +8,28 @@ namespace Application.Activities
 {
     public class List
     {
-        public class Query : IRequest<List<ActivityEntity>> {}
-        public class Handler : IRequestHandler<Query, List<ActivityEntity>>
+        public class Query : IRequest<ActivitiesViewModel> {}
+        public class Handler : IRequestHandler<Query, ActivitiesViewModel>
         {
             private readonly ApplicationDbContext context;
-            public Handler(ApplicationDbContext context)
+            private readonly IMapper mapper;
+
+            public Handler(ApplicationDbContext context, IMapper mapper)
             {
                 this.context = context;
+                this.mapper = mapper;
             }
 
-            public Task<List<ActivityEntity>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<ActivitiesViewModel> Handle(Query request, CancellationToken cancellationToken)
             {
-                return context.Activities.ToListAsync();
+                return new ActivitiesViewModel
+                {
+                    Activities = await context.Activities
+                    .AsNoTracking()
+                    .OrderBy(x => x.Title)
+                    .Select(x => mapper.MapActivityToDto(x))
+                    .ToListAsync()
+                };
             }
         }
     }

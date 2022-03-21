@@ -1,11 +1,7 @@
-﻿using Domain.Entities;
+﻿using Application.DTOs.Activities;
+using Domain.Entities;
 using MediatR;
 using Persistence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Activities
 {
@@ -13,7 +9,8 @@ namespace Application.Activities
     {
         public class Command : IRequest
         {
-            public ActivityEntity Activity { get; set; } = new ActivityEntity();
+            public ActivityDtoBase Activity { get; set; } = new ActivityDtoBase();
+            public Guid Id { get; set; }
         }
 
         public class Handler : IRequestHandler<Command>
@@ -27,9 +24,13 @@ namespace Application.Activities
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var activity = await context.Activities.FindAsync(request.Activity.Id);
+                var activity = await context.Activities.FindAsync(request.Id);
 
-                // possible null ref exception
+                if (activity is null)
+                {
+                    //TODO:  throw some custom DataNotFound exception here
+                    throw new Exception("Activity is not found.");
+                }
                 
                 activity.Title = request.Activity.Title ?? activity.Title;
                 activity.Description = request.Activity.Description ?? activity.Description;

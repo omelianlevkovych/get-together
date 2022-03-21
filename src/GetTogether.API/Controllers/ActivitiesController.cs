@@ -1,5 +1,6 @@
 ﻿using Application.Activities;
-using Domain.Entities;
+using Application.Common.Mapper;
+using Application.DTOs.Activities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GetTogether.API.Controllers
@@ -8,32 +9,37 @@ namespace GetTogether.API.Controllers
     [ApiController]
     public class ActivitiesController : BaseApiController
     {
+        private readonly IMapper mapper;
+
+        public ActivitiesController(IMapper mapper)
+        {
+            this.mapper = mapper;
+        }
 
         [HttpGet]
-        public async Task<ActionResult<List<ActivityEntity>>> GetActivities()
+        public async Task<ActionResult<ActivitiesViewModel>> GetActivities()
         {
-            return await Mediator.Send(new List.Query());
+            var activities = await Mediator.Send(new List.Query());
+            return Ok(activities);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ActivityEntity>> GetActivity(Guid id)
+        public async Task<ActionResult<ActivityDtoBase>> GetActivity(Guid id)
         {
-            var activity = await Mediator.Send(new Details.Query{Id = id});
-            return (activity is not null) ? Ok(activity) : NotFound();
+            return await Mediator.Send(new Details.Query{Id = id});
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateActivity(ActivityEntity activity)
+        public async Task<IActionResult> CreateActivity(ActivityDto activity)
         {
             await Mediator.Send(new Create.Command { Activity = activity });
             return Ok();
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateActivity(Guid id,ActivityEntity activity)
+        public async Task<IActionResult> UpdateActivity(Guid id, ActivityDtoBase activity)
         {
-            activity.Id = id;
-            await Mediator.Send(new Edit.Command { Activity = activity });
+            await Mediator.Send(new Edit.Command { Activity = activity, Id = id });
             return Ok();
         }
     }
