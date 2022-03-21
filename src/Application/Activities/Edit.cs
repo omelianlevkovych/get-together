@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Activities;
+﻿using Application.Common.Exceptions;
+using Application.DTOs.Activities;
 using Domain.Entities;
 using MediatR;
 using Persistence;
@@ -28,8 +29,7 @@ namespace Application.Activities
 
                 if (activity is null)
                 {
-                    //TODO:  throw some custom DataNotFound exception here
-                    throw new Exception("Activity is not found.");
+                    throw new NotFoundException(nameof(ActivityEntity), request.Id);
                 }
                 
                 activity.Title = request.Activity.Title ?? activity.Title;

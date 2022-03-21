@@ -1,5 +1,7 @@
-﻿using Application.Common.Mapper;
+﻿using Application.Common.Exceptions;
+using Application.Common.Mapper;
 using Application.DTOs.Activities;
+using Domain.Entities;
 using MediatR;
 using Persistence;
 
@@ -28,8 +30,7 @@ namespace Application.Activities
                 var activity = await context.Activities.FindAsync(request.Id);
                 if (activity is null)
                 {
-                    //TODO:  throw some custom DataNotFound exception here
-                    throw new Exception("Activity is not found.");
+                    throw new NotFoundException(nameof(ActivityEntity), request.Id);
                 }
                 return mapper.MapActivityToDtoBase(activity);
             }
