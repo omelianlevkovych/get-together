@@ -21,5 +21,20 @@ namespace GetTogether.API.Controllers
             var activity = await Mediator.Send(new Details.Query{Id = id});
             return (activity is not null) ? Ok(activity) : NotFound();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateActivity(ActivityEntity activity)
+        {
+            await Mediator.Send(new Create.Command { Activity = activity });
+            return Ok();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateActivity(Guid id,ActivityEntity activity)
+        {
+            activity.Id = id;
+            await Mediator.Send(new Edit.Command { Activity = activity });
+            return Ok();
+        }
     }
 }
