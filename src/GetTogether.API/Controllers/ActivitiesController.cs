@@ -1,5 +1,4 @@
 ﻿using Application.Activities;
-using Application.Common.Mapper;
 using Application.DTOs.Activities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,13 +8,6 @@ namespace GetTogether.API.Controllers
     [ApiController]
     public class ActivitiesController : BaseApiController
     {
-        private readonly IMapper mapper;
-
-        public ActivitiesController(IMapper mapper)
-        {
-            this.mapper = mapper;
-        }
-
         [HttpGet]
         public async Task<ActionResult<ActivitiesViewModel>> GetActivities()
         {
@@ -40,6 +32,13 @@ namespace GetTogether.API.Controllers
         public async Task<IActionResult> UpdateActivity(Guid id, ActivityDtoBase activity)
         {
             await Mediator.Send(new Edit.Command { Activity = activity, Id = id });
+            return Ok();
+        }
+
+        [HttpDelete("id")]
+        public async Task<IActionResult> DeleteActivity(Guid id)
+        {
+            await Mediator.Send(new Delete.Command { Id = id });
             return Ok();
         }
     }

@@ -1,6 +1,4 @@
-using Application.Activities;
-using Application.Common.Mapper;
-using MediatR;
+using GetTogether.API.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Seed;
@@ -13,24 +11,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddTransient<SeedDatabase>();
-builder.Services.AddScoped<IMapper, Mapper>();
-
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-    options.UseSqlServer(connectionString);
-});
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("CorsPolicy", policy =>
-    {
-        policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000");
-    });
-});
-
-builder.Services.AddMediatR(typeof(List.Handler).Assembly);
+builder.Services.AddApplicationServices(builder.Configuration);
 
 var app = builder.Build();
 await SeedDatabase(app);
