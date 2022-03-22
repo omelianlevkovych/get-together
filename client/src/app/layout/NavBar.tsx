@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Button, Container, Menu } from 'semantic-ui-react';
 
 export default function NavBar() {
     return (
-        <div>
+        <Fragment>
             <Menu inverted fixed='top'>
                 <Container>
                     <Menu.Item header>
@@ -16,6 +16,6 @@ export default function NavBar() {
                     </Menu.Item>
                 </Container>
             </Menu>
-        </div>
+        </Fragment>
     )
 }
