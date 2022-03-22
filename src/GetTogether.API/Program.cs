@@ -3,6 +3,7 @@ using Application.Common.Mapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using Persistence.Interfaces;
 using Persistence.Seed;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<SeedDatabase>();
 builder.Services.AddScoped<IMapper, Mapper>();
+builder.Services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

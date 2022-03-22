@@ -4,6 +4,7 @@ using Application.DTOs.Activities;
 using Domain.Entities;
 using MediatR;
 using Persistence;
+using Persistence.Interfaces;
 
 namespace Application.Activities
 {
@@ -16,10 +17,10 @@ namespace Application.Activities
 
         public class Handler : IRequestHandler<Query, ActivityDtoBase>
         {
-            private readonly ApplicationDbContext context;
+            private readonly IApplicationDbContext context;
             private readonly IMapper mapper;
 
-            public Handler(ApplicationDbContext context, IMapper mapper)
+            public Handler(IApplicationDbContext context, IMapper mapper)
             {
                 this.context = context;
                 this.mapper = mapper;

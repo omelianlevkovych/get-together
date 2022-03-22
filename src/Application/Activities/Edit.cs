@@ -3,6 +3,7 @@ using Application.DTOs.Activities;
 using Domain.Entities;
 using MediatR;
 using Persistence;
+using Persistence.Interfaces;
 
 namespace Application.Activities
 {
@@ -16,9 +17,9 @@ namespace Application.Activities
 
         public class Handler : IRequestHandler<Command>
         {
-            private readonly ApplicationDbContext context;
+            private readonly IApplicationDbContext context;
 
-            public Handler(ApplicationDbContext context)
+            public Handler(IApplicationDbContext context)
             {
                 this.context = context;
             }
