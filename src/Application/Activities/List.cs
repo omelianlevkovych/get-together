@@ -2,7 +2,6 @@
 using Application.DTOs.Activities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Persistence;
 using Persistence.Interfaces;
 
 namespace Application.Activities
@@ -29,7 +28,7 @@ namespace Application.Activities
                     .AsNoTracking()
                     .OrderBy(x => x.Title)
                     .Select(x => mapper.MapActivityToDto(x))
-                    .ToListAsync()
+                    .ToListAsync(cancellationToken)
                 };
             }
         }

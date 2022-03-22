@@ -27,7 +27,7 @@ namespace Application.Activities
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var activity = await context.Activities.FindAsync(request.Id);
+                var activity = await context.Activities.FindAsync(request.Id, cancellationToken);
                 if (activity is null)
                 {
                     throw new NotFoundException(nameof(ActivityEntity), request.Id);
@@ -35,7 +35,7 @@ namespace Application.Activities
 
                 // TODO: add soft delete rather than hard delete
                 context.Activities.Remove(activity);
-                await context.SaveChangesAsync();
+                await context.SaveChangesAsync(cancellationToken);
 
                 return Unit.Value;
             }

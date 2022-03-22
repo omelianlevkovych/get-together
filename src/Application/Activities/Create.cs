@@ -28,7 +28,7 @@ namespace Application.Activities
                 var activity = mapper.MapActivityDtoBaseToEntity(request.Activity);
                 context.Activities.Add(activity);
 
-                await context.SaveChangesAsync();
+                await context.SaveChangesAsync(cancellationToken);
                 return Unit.Value;
             }
         }
