@@ -13,7 +13,7 @@ function App() {
 
   useEffect(() => {
     agent.Activities.list().then(response => {
-      setActivities(response);
+      setActivities(response.activities);
     })
   }, [])
 
