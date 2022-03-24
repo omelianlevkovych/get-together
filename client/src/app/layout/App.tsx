@@ -13,7 +13,13 @@ function App() {
 
   useEffect(() => {
     agent.Activities.list().then(response => {
-      setActivities(response.activities);
+      // fix the date format
+      let activities: Activity[] = [];
+      response.activities.forEach(activity => {
+        activity.date = activity.date.split('T')[0];
+        activities.push(activity);
+      })
+      setActivities(activities);
     })
   }, [])
 
