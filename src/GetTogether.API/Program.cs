@@ -14,7 +14,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddApplicationServices(builder.Configuration);
 
 var app = builder.Build();
-await SeedDatabase(app);
+await SeedDb(app);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -33,7 +33,7 @@ app.MapControllers();
 
 app.Run();
 
-static async Task SeedDatabase(IHost host)
+static async Task SeedDb(IHost host)
 {
     using var scope = host.Services.CreateScope();
     var services = scope.ServiceProvider;

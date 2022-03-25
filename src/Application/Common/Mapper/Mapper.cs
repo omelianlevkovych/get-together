@@ -18,6 +18,20 @@ namespace Application.Common.Mapper
             };
         }
 
+        public ActivityEntity MapActivityDtoBaseToEntity(ActivityDtoBase dto, Guid id)
+        {
+            return new ActivityEntity
+            {
+                Id = id,
+                Title = dto.Title,
+                Description = dto.Description,
+                Category = dto.Category,
+                City = dto.City,
+                Date = dto.Date,
+                Venue = dto.Venue,
+            };
+        }
+
         public ActivityEntity MapActivityDtoToEntity(ActivityDto dto)
         {
             return new ActivityEntity

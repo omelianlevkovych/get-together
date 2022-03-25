@@ -10,5 +10,7 @@ namespace Application.Common.Mapper
         IEnumerable<ActivityDto> MapActivityToDto(IEnumerable<ActivityEntity> entities);
         ActivityEntity MapActivityDtoToEntity(ActivityDto dto);
         ActivityEntity MapActivityDtoBaseToEntity(ActivityDtoBase dto);
+        ActivityEntity MapActivityDtoBaseToEntity(ActivityDtoBase dto, Guid id);
+
     }
 }
