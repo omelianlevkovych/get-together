@@ -3,6 +3,7 @@
 npm start
 
 axios for http requests  
+mobx as centralized state management system  
 semanticUI to prettify
 
 
