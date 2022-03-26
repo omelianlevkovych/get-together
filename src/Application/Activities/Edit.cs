@@ -11,7 +11,7 @@ namespace Application.Activities
     {
         public class Command : IRequest
         {
-            public ActivityDtoBase Activity { get; set; } = new ActivityDtoBase();
+            public ActivityDto Activity { get; set; } = new ActivityDto();
             public Guid Id { get; set; }
         }
 

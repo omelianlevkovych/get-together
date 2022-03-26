@@ -16,21 +16,22 @@ namespace GetTogether.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ActivityDtoBase>> GetActivity(Guid id)
+        public async Task<ActionResult<ActivityDto>> GetActivity(Guid id)
         {
             return await Mediator.Send(new Details.Query{Id = id});
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateActivity(ActivityDtoBase activity)
+        public async Task<IActionResult> CreateActivity(ActivityDto activity)
         {
             await Mediator.Send(new Create.Command { Activity = activity });
             return Ok();
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateActivity(Guid id, ActivityDtoBase activity)
+        public async Task<IActionResult> UpdateActivity(Guid id, ActivityDto activity)
         {
+            activity.Id = id;
             await Mediator.Send(new Edit.Command { Activity = activity, Id = id });
             return Ok();
         }
