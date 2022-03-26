@@ -1,0 +1,118 @@
+import { makeAutoObservable, runInAction } from "mobx";
+import agent from "../api/agent";
+import { Activity } from "../models/activity";
+import {v4 as uuid} from 'uuid';
+
+export default class ActivityStore {
+    activityDictionary = new Map<string, Activity>();
+    selectedActivity: Activity | undefined = undefined;
+    editMode = false;
+    loading = false;
+    loadInitial = true;
+
+    constructor() {
+        makeAutoObservable(this)
+    }
+
+    // computed observable
+    get activitiesByDate() {
+        return Array.from(this.activityDictionary.values())
+                    .sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
+    }
+
+    loadActivities = async () => {
+        try {
+            const activitiesVM = await agent.Activities.list();
+            activitiesVM.activities.forEach(activity => {
+                activity.date = activity.date.split('T')[0];
+                // mutating state here
+                this.activityDictionary.set(activity.id, activity);
+            })
+            this.setLoadingInitial(false);
+            
+        } catch (error) {
+            console.log(error);
+            this.setLoadingInitial(false);
+        }
+    }
+    // in order not to use runInAction https://mobx.js.org/actions.html
+    setLoadingInitial = (state: boolean) => {
+        this.loadInitial = state;
+    }
+
+    selectActivity = (id: string) => {
+        this.selectedActivity = this.activityDictionary.get(id);
+    }
+
+    cancelSelectedActivity = () => {
+        this.selectedActivity = undefined;
+    }
+
+    // id when we creating an activity, and no param when updating
+    openForm = (id?: string) => {
+        id ? this.selectActivity(id) : this.cancelSelectedActivity();
+        this.editMode = true;
+    }
+
+    closeForm = () => {
+        this.editMode = false;
+    }
+
+    createActivity = async (activity: Activity) => {
+        this.loading = true;
+        activity.id = uuid();
+        try {
+            await agent.Activities.create(activity);
+            runInAction(() => {
+                this.activityDictionary.set(activity.id, activity);
+                this.selectedActivity = activity;
+                this.editMode = false;
+                this.loading = false;
+            })
+        } catch(error) {
+            console.log(error);
+        }
+    }
+
+    updateActivity = async (activity: Activity) => {
+        this.loading = true;
+        try{
+            await agent.Activities.update(activity);
+            runInAction(() => {
+                this.activityDictionary.set(activity.id, activity);
+                this.selectedActivity = activity;
+                this.editMode = false;
+                this.loading = false;
+            })
+        } catch(error) {
+            console.log(error);
+            runInAction(() => {
+                this.loading = false;
+            })
+        }
+    }
+
+    deleteActivity = async (id: string) => {
+        this.loading = true;
+        try {
+            await agent.Activities.delete(id);
+            runInAction(() => {
+                this.activityDictionary.delete(id);
+                // remove the selected (activity detail) when activity is deleted
+                this.removeSelectedAtivity(id);
+                this.loading = false;
+            })
+        } catch(error) {
+            console.log(error);
+            runInAction(() => {
+                this.loading = false;
+            })
+        }
+    }
+
+    removeSelectedAtivity(id: string) {
+        if (this.selectedActivity && this.selectedActivity.id === id) {
+            this.cancelSelectedActivity();
+        }
+    }
+}
