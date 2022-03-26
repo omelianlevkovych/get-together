@@ -1,4 +1,4 @@
-import { action, makeAutoObservable, makeObservable, observable } from "mobx";
+import { makeAutoObservable } from "mobx";
 import agent from "../api/agent";
 import { Activity } from "../models/activity";
 
@@ -14,7 +14,7 @@ export default class ActivityStore {
     }
 
     loadActivities = async () => {
-        this.loadInitial = true;
+        this.setLoadingInitial(true);
         try {
             const activitiesVM = await agent.Activities.list();
             activitiesVM.activities.forEach(activity => {
@@ -22,10 +22,15 @@ export default class ActivityStore {
                 // mutating state here
                 this.activities.push(activity);
             })
-            this.loadInitial = false;
+            this.setLoadingInitial(false);
+            
         } catch (error) {
             console.log(error);
-            this.loadInitial = false;
+            this.setLoadingInitial(false);
         }
+    }
+    // in order not to use runInAction https://mobx.js.org/actions.html
+    setLoadingInitial = (state: boolean) => {
+        this.loadInitial = state;
     }
 }
