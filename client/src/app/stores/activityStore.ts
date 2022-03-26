@@ -8,7 +8,7 @@ export default class ActivityStore {
     selectedActivity: Activity | undefined = undefined;
     editMode = false;
     loading = false;
-    loadInitial = false;
+    loadInitial = true;
 
     constructor() {
         makeAutoObservable(this)
@@ -21,7 +21,6 @@ export default class ActivityStore {
     }
 
     loadActivities = async () => {
-        this.setLoadingInitial(true);
         try {
             const activitiesVM = await agent.Activities.list();
             activitiesVM.activities.forEach(activity => {
