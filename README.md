@@ -3,7 +3,9 @@
 npm start
 
 axios for http requests  
-mobx as centralized state management system  
+mobx as centralized state management system; it seems that redux is concepted around immunatibility and
+functional programming, so I would prefer using redux in future. However, mobx seems to be much easier
+to learn, the main reason why I stopped here for now.  
 semanticUI to prettify
 
 
