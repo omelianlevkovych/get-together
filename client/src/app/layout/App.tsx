@@ -1,5 +1,5 @@
 import React, { Fragment, useContext, useEffect, useState } from 'react';
-import { Button, Container} from 'semantic-ui-react';
+import { Container} from 'semantic-ui-react';
 import { Activity } from '../models/activity';
 import NavBar from './NavBar';
 import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
@@ -16,22 +16,11 @@ function App() {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [selectedActivity, setSelectedActivity] = useState<Activity | undefined>(undefined);
   const [editMode, setEditMode] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    agent.Activities.list().then(response => {
-      // fix the date format
-      let activities: Activity[] = [];
-      response.activities.forEach(activity => {
-        activity.date = activity.date.split('T')[0];
-        activities.push(activity);
-      })
-      setActivities(activities);
-      // because we got our data from api
-      setLoading(false);
-    })
-  }, [])
+    activityStore.loadActivities();
+  }, [activityStore])
 
   function handleSelectActivity(id: string) {
     setSelectedActivity(activities.find(x => x.id === id));
@@ -79,7 +68,7 @@ function App() {
     })
   }
 
-  if (loading) return <LoadingComponent content='Loading app'/>
+  if (activityStore.loadInitial) return <LoadingComponent content='Loading app'/>
 
   return (
     <Fragment>
@@ -87,7 +76,7 @@ function App() {
 
       <Container style={{marginTop: '7em'}}>
       <ActivityDashboard 
-        activities={activities}
+        activities={activityStore.activities}
         selectedActivity={selectedActivity}
         selectActivity={handleSelectActivity}
         cancelSelectActivity={handleCancelSelectActivity}
