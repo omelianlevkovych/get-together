@@ -3,19 +3,18 @@ using Application.Common.Mapper;
 using Application.DTOs.Activities;
 using Domain.Entities;
 using MediatR;
-using Persistence;
 using Persistence.Interfaces;
 
 namespace Application.Activities
 {
     public class Details
     {
-        public class Query : IRequest<ActivityDtoBase> 
+        public class Query : IRequest<ActivityDto> 
         {
             public Guid Id { get; set; }
         }
 
-        public class Handler : IRequestHandler<Query, ActivityDtoBase>
+        public class Handler : IRequestHandler<Query, ActivityDto>
         {
             private readonly IApplicationDbContext context;
             private readonly IMapper mapper;
@@ -26,14 +25,14 @@ namespace Application.Activities
                 this.mapper = mapper;
             }
 
-            public async Task<ActivityDtoBase> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<ActivityDto> Handle(Query request, CancellationToken cancellationToken)
             {
-                var activity = await context.Activities.FindAsync(request.Id, cancellationToken);
+                var activity = await context.Activities.FindAsync(request.Id);
                 if (activity is null)
                 {
                     throw new NotFoundException(nameof(ActivityEntity), request.Id);
                 }
-                return mapper.MapActivityToDtoBase(activity);
+                return mapper.MapActivityToDto(activity);
             }
         }
     }

@@ -1,5 +1,5 @@
 import { Activity } from "./activity";
 
-export interface Activities {
+export interface ActivityViewModel {
     activities: Activity[];
 }

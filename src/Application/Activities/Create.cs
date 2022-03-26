@@ -9,7 +9,7 @@ namespace Application.Activities
     {
         public class Command : IRequest
         {
-            public ActivityDtoBase Activity { get; set; } = new ActivityDtoBase();
+            public ActivityDto Activity { get; set; } = new ActivityDto();
         }
 
         public class Handler : IRequestHandler<Command>
@@ -25,7 +25,7 @@ namespace Application.Activities
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var activity = mapper.MapActivityDtoBaseToEntity(request.Activity);
+                var activity = mapper.MapActivityDtoToEntity(request.Activity);
                 context.Activities.Add(activity);
 
                 await context.SaveChangesAsync(cancellationToken);
