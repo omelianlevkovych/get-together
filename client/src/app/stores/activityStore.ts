@@ -4,7 +4,7 @@ import { Activity } from "../models/activity";
 
 export default class ActivityStore {
     activities: Activity[] = [];
-    selectedActivity: Activity | null = null;
+    selectedActivity: Activity | undefined = undefined;
     editMode = false;
     loading = false;
     loadInitial = false;
@@ -32,5 +32,23 @@ export default class ActivityStore {
     // in order not to use runInAction https://mobx.js.org/actions.html
     setLoadingInitial = (state: boolean) => {
         this.loadInitial = state;
+    }
+
+    selectActivity = (id: string) => {
+        this.selectedActivity = this.activities.find(x => x.id === id);
+    }
+
+    cancelSelectedActivity = () => {
+        this.selectedActivity = undefined;
+    }
+
+    // id when we creating an activity, and no param when updating
+    openForm = (id?: string) => {
+        id ? this.selectActivity(id) : this.cancelSelectedActivity();
+        this.editMode = true;
+    }
+
+    closeForm = () => {
+        this.editMode = false;
     }
 }
