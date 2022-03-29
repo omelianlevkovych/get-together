@@ -24,9 +24,7 @@ export default class ActivityStore {
         try {
             const activitiesVM = await agent.Activities.list();
             activitiesVM.activities.forEach(activity => {
-                activity.date = activity.date.split('T')[0];
-                // mutating state here
-                this.activityDictionary.set(activity.id, activity);
+                this.setActivity(activity);
             })
             this.setLoadingInitial(false);
             
@@ -35,27 +33,36 @@ export default class ActivityStore {
             this.setLoadingInitial(false);
         }
     }
+
+    loadActivity = async (id: string) => {
+        let activity = this.getActivity(id);
+        if (activity) {
+            this.selectedActivity = activity;
+        } {
+            this.setLoadingInitial(true);
+            try {
+                activity = await agent.Activities.details(id);
+                this.setActivity(activity);
+                this.setLoadingInitial(false);
+            } catch(error) {
+                console.log(error);
+                this.setLoadingInitial(false);
+            }
+        }
+    }
+
+    private setActivity = (activity: Activity) => {
+        activity.date = activity.date.split('T')[0];
+        // mutating state here
+        this.activityDictionary.set(activity.id, activity);
+    }
+
+    private getActivity = (id: string) => {
+        return this.activityDictionary.get(id);
+    }
     // in order not to use runInAction https://mobx.js.org/actions.html
     setLoadingInitial = (state: boolean) => {
         this.loadInitial = state;
-    }
-
-    selectActivity = (id: string) => {
-        this.selectedActivity = this.activityDictionary.get(id);
-    }
-
-    cancelSelectedActivity = () => {
-        this.selectedActivity = undefined;
-    }
-
-    // id when we creating an activity, and no param when updating
-    openForm = (id?: string) => {
-        id ? this.selectActivity(id) : this.cancelSelectedActivity();
-        this.editMode = true;
-    }
-
-    closeForm = () => {
-        this.editMode = false;
     }
 
     createActivity = async (activity: Activity) => {
@@ -99,7 +106,6 @@ export default class ActivityStore {
             runInAction(() => {
                 this.activityDictionary.delete(id);
                 // remove the selected (activity detail) when activity is deleted
-                this.removeSelectedAtivity(id);
                 this.loading = false;
             })
         } catch(error) {
@@ -107,12 +113,6 @@ export default class ActivityStore {
             runInAction(() => {
                 this.loading = false;
             })
-        }
-    }
-
-    removeSelectedAtivity(id: string) {
-        if (this.selectedActivity && this.selectedActivity.id === id) {
-            this.cancelSelectedActivity();
         }
     }
 }
