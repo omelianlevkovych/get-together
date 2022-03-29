@@ -8,7 +8,7 @@ export default class ActivityStore {
     selectedActivity: Activity | undefined = undefined;
     editMode = false;
     loading = false;
-    loadInitial = true;
+    loadingInitial = true;
 
     constructor() {
         makeAutoObservable(this)
@@ -21,6 +21,7 @@ export default class ActivityStore {
     }
 
     loadActivities = async () => {
+        this.loadingInitial = true; 
         try {
             const activitiesVM = await agent.Activities.list();
             activitiesVM.activities.forEach(activity => {
@@ -43,6 +44,7 @@ export default class ActivityStore {
             try {
                 activity = await agent.Activities.details(id);
                 this.setActivity(activity);
+                this.selectedActivity = activity;
                 this.setLoadingInitial(false);
             } catch(error) {
                 console.log(error);
@@ -62,7 +64,7 @@ export default class ActivityStore {
     }
     // in order not to use runInAction https://mobx.js.org/actions.html
     setLoadingInitial = (state: boolean) => {
-        this.loadInitial = state;
+        this.loadingInitial = state;
     }
 
     createActivity = async (activity: Activity) => {
