@@ -7,10 +7,12 @@ import ActivityList from './ActivityList';
 
 export default observer(function ActivityDashboard() {
     const {activityStore} = useStore();
+    const {loadActivities, activityDictionary} =activityStore;
 
     useEffect(() => {
-      activityStore.loadActivities();
-    }, [activityStore])
+        // without pagination temporary fix to not load all activities again
+        if (activityDictionary.size <= 1) loadActivities();
+    }, [activityDictionary.size, loadActivities])
   
     if (activityStore.loadingInitial) return <LoadingComponent content='Loading app'/>
 
