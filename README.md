@@ -1,3 +1,8 @@
+- play with vim
+- vscode and it extensions
+- cqrs (two dbs), event sourcing, ddd
+- integration tests
+
 # get-together
 .net 6, react17, mobx6  
 npm start
