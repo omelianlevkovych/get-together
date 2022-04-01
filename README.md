@@ -20,3 +20,5 @@ guids and uuids vs sequential ids (1,2,3):
 * guids are impossible to guess, so if your api is exposed and compromised, it is still in some sense secured (e.g : /user/{id})  
 * sequential ids can be indexed in the way they boost performance
 consider hashids
+
+dotnet new webapi -n Name -f net5.0 #-f||--framework for the framewrok version
